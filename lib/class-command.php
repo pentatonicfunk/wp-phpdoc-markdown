@@ -128,7 +128,7 @@ class Command extends \WP_Parser\Command {
 					'orig_name' => $hook['name'],
 					'file'      => $file,
 				);
-				wp_phpdoc_markdown_append_hook_doc( $hook, $file );
+				wp_phpdoc_markdown_append_hook_doc( $hook, $file, $args[0] );
 			}
 
 			$toc_template = wp_phpdoc_markdown_get_template( 'toc' );

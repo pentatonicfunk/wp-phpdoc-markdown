@@ -28,10 +28,11 @@ function wp_phpdoc_get_hooks( $source_path, $file, &$hooks ) {
  *
  * @param $hook
  * @param $file
+ * @param $source_dir
  *
  * @throws Exception
  */
-function wp_phpdoc_markdown_append_hook_doc( $hook, $file ) {
+function wp_phpdoc_markdown_append_hook_doc( $hook, $file, $source_dir ) {
 	$template = wp_phpdoc_markdown_get_template( 'hook' );
 	$template = file_get_contents( $template );
 	$template = str_replace( '{{TAG}}', $hook['name'], $template );
@@ -42,7 +43,7 @@ function wp_phpdoc_markdown_append_hook_doc( $hook, $file ) {
 
 	$out_dir = \Webmozart\PathUtil\Path::getDirectory( $file );
 	$out_dir = \Webmozart\PathUtil\Path::makeAbsolute( $out_dir, getcwd() );
-	$src_dir = \Webmozart\PathUtil\Path::makeAbsolute( '../forminator/', getcwd() );
+	$src_dir = \Webmozart\PathUtil\Path::makeAbsolute( $source_dir, getcwd() );
 	$src_dir = \Webmozart\PathUtil\Path::makeAbsolute( $hook['source_path'], $src_dir );
 
 	$rel = \Webmozart\PathUtil\Path::makeRelative( $src_dir, $out_dir );

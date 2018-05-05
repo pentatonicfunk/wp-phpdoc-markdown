@@ -1,0 +1,35 @@
+{
+	"name"       : "pentatonicfunk/wp-phpdoc-markdown",
+	"description": "Create markdown from WordPress phpdoc, focused on hooks (action/filter). Forked from https://github.com/WordPress/phpdoc-parser",
+	"keywords"   : ["wordpress","hooks","markdown"],
+	"type"       : "wordpress-plugin",
+	"homepage"   : "https://github.com/pentatonicfunk/wp-phpdoc-markdown",
+	"license"    : "GPL-2.0-or-later",
+	"authors"    : [
+		{
+			"name"    : "Hendrawan Kuncoro",
+			"homepage": "http://premium.wpmudev.org",
+			"role"    : "Developer",
+			"email"    : "hendrawan.kuncoro@incsub.com"
+		}
+	],
+	"support"    : {
+		"issues": "https://github.com/pentatonicfunk/wp-phpdoc-markdown/issues"
+	},
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/pentatonicfunk/phpdoc-parser"
+		}
+	],
+	"require"    : {
+		"php"                      : ">=5.4",
+	    "Wordpress/phpdoc-parser": "dev-library-convert",
+		"webmozart/path-util": "^2.3"
+	},
+	"autoload"   : {
+		"classmap": ["lib"],
+		"files"   : ["lib/functions.php"]
+	},
+    "minimum-stability": "dev"
+}

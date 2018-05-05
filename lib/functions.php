@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Get All hooks recursively
+ *
+ * @param $source_path
+ * @param $file
+ * @param $hooks
+ */
 function wp_phpdoc_get_hooks( $source_path, $file, &$hooks ) {
 	if ( is_array( $file ) ) {
 		if ( isset( $file['hooks'] ) ) {
@@ -17,6 +24,8 @@ function wp_phpdoc_get_hooks( $source_path, $file, &$hooks ) {
 }
 
 /**
+ * Appending Hook to markdown doc
+ *
  * @param $hook
  * @param $file
  *
@@ -81,6 +90,11 @@ function wp_phpdoc_markdown_append_hook_doc( $hook, $file ) {
 	file_put_contents( $file, $template . PHP_EOL, FILE_APPEND );
 }
 
+/**
+ * Same as `rm -rf <dir>`
+ *
+ * @param $dir
+ */
 function wp_phpdoc_markdown_rmrf( $dir ) {
 	foreach ( glob( $dir ) as $file ) {
 		if ( is_dir( $file ) ) {
@@ -93,6 +107,8 @@ function wp_phpdoc_markdown_rmrf( $dir ) {
 }
 
 /**
+ * Retrieving template file
+ *
  * @param $name
  *
  * @return string
@@ -147,6 +163,13 @@ function wp_phpdoc_markdown_get_template( $name ) {
 	throw new Exception( 'Template Not Defined ' . wp_json_encode( array( $name, $defined_templates ) ) );
 }
 
+/**
+ * Build Source Code of hook
+ *
+ * @param $hook
+ *
+ * @return string
+ */
 function wp_phpdoc_markdown_get_template_build_source_code( $hook ) {
 
 	$source_code = '```php' . PHP_EOL . '<?php' . PHP_EOL;
@@ -177,6 +200,13 @@ function wp_phpdoc_markdown_get_template_build_source_code( $hook ) {
 	return $source_code;
 }
 
+/**
+ * Build example usage
+ *
+ * @param $hook
+ *
+ * @return string
+ */
 function wp_phpdoc_markdown_get_template_build_example( $hook ) {
 	$sample_code = '```php' . PHP_EOL . '<?php' . PHP_EOL;
 	$func_call   = '';
@@ -240,6 +270,14 @@ function wp_phpdoc_markdown_get_template_build_example( $hook ) {
 	return $sample_code;
 }
 
+/**
+ * Build Changelogs
+ *
+ * @param $hook
+ *
+ * @return mixed|string
+ * @throws Exception
+ */
 function wp_phpdoc_markdown_get_template_build_changelogs( $hook ) {
 	$template_changelogs = wp_phpdoc_markdown_get_template( 'hook.changelogs' );
 	$template_changelogs = file_get_contents( $template_changelogs );

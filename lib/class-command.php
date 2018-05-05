@@ -58,7 +58,7 @@ class Command extends \WP_Parser\Command {
 
 			$hooks = array();
 			foreach ( $phpdoc as $file ) {
-				$this->get_hooks( $file['path'], $file, $hooks );
+				wp_phpdoc_get_hooks( $file['path'], $file, $hooks );
 			}
 
 			if ( empty( $hooks ) ) {
@@ -155,29 +155,6 @@ class Command extends \WP_Parser\Command {
 			\WP_CLI::error( $e->getMessage() );
 		}
 
-	}
-
-	/**
-	 * Get All hooks recursively
-	 *
-	 * @param string $source_path
-	 * @param array  $file
-	 * @param array  $hooks array ref
-	 */
-	protected function get_hooks( $source_path, $file, &$hooks ) {
-		if ( is_array( $file ) ) {
-			if ( isset( $file['hooks'] ) ) {
-				$new_hooks = $file['hooks'];
-				foreach ( $new_hooks as $key => $new_hook ) {
-					$new_hooks[ $key ]['source_path'] = $source_path;
-				}
-				$hooks = array_merge( $hooks, $new_hooks );
-			}
-
-			foreach ( $file as $data ) {
-				$this->get_hooks( $source_path, $data, $hooks );
-			}
-		}
 	}
 
 }

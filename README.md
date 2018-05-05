@@ -7,6 +7,8 @@ Create Markdown documentations for WordPress Code. Currently its only creating d
  
  Inline documentation should follow [WordPress Best Practices](https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/)
 
+## Sample Output : [example.md](examples/example.md)
+
 ## Requirements
 * PHP 5.4+
 * [Composer](https://getcomposer.org/)
@@ -33,8 +35,6 @@ In your site's directory / `wp-phpdoc-markdown` directory:
 
     wp wparser mdhooks <src_dir> <output_dir> [--json_doc=<json_doc>]
     wp wparser mdhooks ../forminator/ ./../forminator/docs
-    
-Sample Output : [example.md](examples/example.md)
 
 ## Customization
 All default used templates are placed in [templates](templates)

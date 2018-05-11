@@ -212,9 +212,37 @@ function wp_phpdoc_markdown_build_source_code( $hook ) {
  * @return string
  */
 function wp_phpdoc_markdown_build_example( $hook ) {
+	$skipped_var_types_for_type_hinting_example = array(
+		'null',
+	);
+	$skipped_var_types_for_type_hinting_example = apply_filters( 'wp_phpdoc_markdown_skipped_var_types_for_type_hinting_example', $skipped_var_types_for_type_hinting_example );
+
 	$sample_code = '```php' . PHP_EOL . '<?php' . PHP_EOL;
 	$func_call   = '';
 	$params      = array();
+	$params_doc  = array();
+	foreach ( $hook['doc']['tags'] as $tag ) {
+		if ( 'param' === $tag['name'] ) {
+			$types = $tag['types'];
+			foreach ( $types as $key => $type ) {
+				if ( in_array( strtolower( $type ), $skipped_var_types_for_type_hinting_example, true ) ) {
+					unset( $types[ $key ] );
+				}
+			}
+
+			// find first array by key
+			$type = '';
+			ksort( $types );
+			if ( isset( $types[0] ) ) {
+				$type = $types[0];
+			}
+
+			$params_doc[ $tag['variable'] ] = array(
+				'type'        => $type,
+				'description' => $tag['content'],
+			);
+		}
+	}
 	switch ( $hook['type'] ) {
 		case 'action':
 			$func_call = 'add_action';
@@ -233,7 +261,7 @@ function wp_phpdoc_markdown_build_example( $hook ) {
 				$params = '++' . $hook['arguments'][0] . '++';
 				$params = str_replace( '++array(', '', $params );
 				$params = str_replace( ')++', '', $params );
-				$params = str_replace( '$this', '$class_object', $params );
+				$params = str_replace( '$this', '$this_class_object', $params );
 				$params = explode( ',', $params );
 			}
 			break;
@@ -243,22 +271,45 @@ function wp_phpdoc_markdown_build_example( $hook ) {
 			break;
 	}
 
+
 	$func_name_to_hook = $func_call . '_' . $hook['name'];
 	$func_name_to_hook = sanitize_title( $func_name_to_hook );
 	$func_name_to_hook = str_replace( '-', '_', $func_name_to_hook );
 
 	// normalize param
 	foreach ( $params as $key => $param ) {
-		$param          = str_replace( '$this', '$class_object', $param );
+		$param          = str_replace( '$this', '$this_class_object', $param );
 		$param          = str_replace( '$', '', $param );
 		$param          = sanitize_title( $param );
 		$param          = str_replace( '-', '_', $param );
 		$params[ $key ] = '$' . $param;
 	}
+
+	foreach ( $params as $key => $param ) {
+		$param_name = $param;
+		if ( '$this_class_object' === $param_name ) {
+			$param_name = '$this';
+		}
+		if ( isset( $params_doc[ $param_name ] ) ) {
+			if ( ! empty( $params_doc[ $param_name ]['type'] ) ) {
+				$params[ $key ] = $params_doc[ $param_name ]['type'] . ' ' . $param;
+			}
+		}
+	}
+
+
+	// generate `function function_name(.....){`
 	$sample_code .= 'function ' . $func_name_to_hook . '( ' . implode( ', ', $params ) . ' ){' . PHP_EOL;
 	if ( 'add_filter' === $func_call ) {
 		$sample_code .= "\t// do some filters." . PHP_EOL . PHP_EOL;
-		$sample_code .= "\treturn " . $params[0] . ';' . PHP_EOL;
+
+		// also cast return
+		$return      = $params[0];
+		$type_return = explode( ' ', $params[0] );
+		if ( $type_return[1] ) {
+			$return = $type_return[1];
+		}
+		$sample_code .= "\treturn " . $return . ';' . PHP_EOL;
 	} else {
 		$sample_code .= "\t// do some action." . PHP_EOL . PHP_EOL;
 	}

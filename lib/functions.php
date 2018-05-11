@@ -41,8 +41,8 @@ function wp_phpdoc_markdown_append_hook_doc( $hook, $file, $source_dir ) {
 
 	$template = str_replace( '{{SUMMARY}}', $description, $template );
 	$template = str_replace( '{{DESCRIPTION}}', $long_desc, $template );
-	$template = str_replace( '{{SOURCE_CODE}}', wp_phpdoc_markdown_get_template_build_source_code( $hook ), $template );
-	$template = str_replace( '{{EXAMPLE}}', wp_phpdoc_markdown_get_template_build_example( $hook ), $template );
+	$template = str_replace( '{{SOURCE_CODE}}', wp_phpdoc_markdown_build_source_code( $hook ), $template );
+	$template = str_replace( '{{EXAMPLE}}', wp_phpdoc_markdown_build_example( $hook ), $template );
 
 	$out_dir = \Webmozart\PathUtil\Path::getDirectory( $file );
 	$out_dir = \Webmozart\PathUtil\Path::makeAbsolute( $out_dir, getcwd() );
@@ -90,7 +90,7 @@ function wp_phpdoc_markdown_append_hook_doc( $hook, $file, $source_dir ) {
 
 	}
 	$template = str_replace( '{{PARAMETERS}}', $all_parameters, $template );
-	$template = str_replace( '{{CHANGELOGS}}', wp_phpdoc_markdown_get_template_build_changelogs( $hook ), $template );
+	$template = str_replace( '{{CHANGELOGS}}', wp_phpdoc_markdown_build_changelogs( $hook ), $template );
 	file_put_contents( $file, $template . PHP_EOL, FILE_APPEND );
 }
 
@@ -174,7 +174,7 @@ function wp_phpdoc_markdown_get_template( $name ) {
  *
  * @return string
  */
-function wp_phpdoc_markdown_get_template_build_source_code( $hook ) {
+function wp_phpdoc_markdown_build_source_code( $hook ) {
 
 	$source_code = '```php' . PHP_EOL . '<?php' . PHP_EOL;
 	$func_call   = '';
@@ -211,7 +211,7 @@ function wp_phpdoc_markdown_get_template_build_source_code( $hook ) {
  *
  * @return string
  */
-function wp_phpdoc_markdown_get_template_build_example( $hook ) {
+function wp_phpdoc_markdown_build_example( $hook ) {
 	$sample_code = '```php' . PHP_EOL . '<?php' . PHP_EOL;
 	$func_call   = '';
 	$params      = array();
@@ -282,7 +282,7 @@ function wp_phpdoc_markdown_get_template_build_example( $hook ) {
  * @return mixed|string
  * @throws Exception
  */
-function wp_phpdoc_markdown_get_template_build_changelogs( $hook ) {
+function wp_phpdoc_markdown_build_changelogs( $hook ) {
 	$template_changelogs = wp_phpdoc_markdown_get_template( 'hook.changelogs' );
 	$template_changelogs = file_get_contents( $template_changelogs );
 
